@@ -1,0 +1,518 @@
+from http import HTTPStatus
+from typing import Any
+
+import httpx
+
+from ... import errors
+from ...client import AuthenticatedClient, Client
+from ...models.incident_page import IncidentPage
+from ...models.incident_query_request import IncidentQueryRequest
+from ...models.insufficient_rights import InsufficientRights
+from ...models.internal_error import InternalError
+from ...models.invalid_cursor import InvalidCursor
+from ...models.invalid_limit import InvalidLimit
+from ...models.invalid_range import InvalidRange
+from ...models.invalid_token import InvalidToken
+from ...models.ip_not_allowed import IpNotAllowed
+from ...models.malformed_request import MalformedRequest
+from ...models.method_not_allowed import MethodNotAllowed
+from ...models.missing_scope import MissingScope
+from ...models.payload_too_large import PayloadTooLarge
+from ...models.quota_exceeded import QuotaExceeded
+from ...models.too_many_items import TooManyItems
+from ...models.unknown_enum_value import UnknownEnumValue
+from ...models.unknown_expand import UnknownExpand
+from ...models.unknown_field import UnknownField
+from ...models.unknown_parameter import UnknownParameter
+from ...models.unsupported_media_type import UnsupportedMediaType
+from ...models.validation_failed import ValidationFailed
+from ...types import UNSET, Response, Unset
+
+
+def _get_kwargs(
+    *,
+    body: IncidentQueryRequest | Unset = UNSET,
+) -> dict[str, Any]:
+    headers: dict[str, Any] = {}
+
+    _kwargs: dict[str, Any] = {
+        "method": "post",
+        "url": "/monitor/incident/q",
+    }
+
+    if not isinstance(body, Unset):
+        _kwargs["json"] = body.to_dict()
+
+    headers["Content-Type"] = "application/json"
+
+    _kwargs["headers"] = headers
+    return _kwargs
+
+
+def _parse_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> (
+    IncidentPage
+    | InsufficientRights
+    | IpNotAllowed
+    | MissingScope
+    | InternalError
+    | InvalidCursor
+    | InvalidLimit
+    | InvalidRange
+    | TooManyItems
+    | UnknownEnumValue
+    | UnknownExpand
+    | UnknownField
+    | UnknownParameter
+    | ValidationFailed
+    | InvalidToken
+    | MalformedRequest
+    | MethodNotAllowed
+    | PayloadTooLarge
+    | QuotaExceeded
+    | UnsupportedMediaType
+    | None
+):
+    if response.status_code == 200:
+        response_200 = IncidentPage.from_dict(response.json())
+
+        return response_200
+
+    if response.status_code == 400:
+        response_400 = MalformedRequest.from_dict(response.json())
+
+        return response_400
+
+    if response.status_code == 401:
+        response_401 = InvalidToken.from_dict(response.json())
+
+        return response_401
+
+    if response.status_code == 403:
+
+        def _parse_response_403(data: object) -> InsufficientRights | IpNotAllowed | MissingScope:
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_403_type_0 = MissingScope.from_dict(data)
+
+                return response_403_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_403_type_1 = InsufficientRights.from_dict(data)
+
+                return response_403_type_1
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            if not isinstance(data, dict):
+                raise TypeError()
+            response_403_type_2 = IpNotAllowed.from_dict(data)
+
+            return response_403_type_2
+
+        response_403 = _parse_response_403(response.json())
+
+        return response_403
+
+    if response.status_code == 405:
+        response_405 = MethodNotAllowed.from_dict(response.json())
+
+        return response_405
+
+    if response.status_code == 413:
+        response_413 = PayloadTooLarge.from_dict(response.json())
+
+        return response_413
+
+    if response.status_code == 415:
+        response_415 = UnsupportedMediaType.from_dict(response.json())
+
+        return response_415
+
+    if response.status_code == 422:
+
+        def _parse_response_422(
+            data: object,
+        ) -> (
+            InvalidCursor
+            | InvalidLimit
+            | InvalidRange
+            | TooManyItems
+            | UnknownEnumValue
+            | UnknownExpand
+            | UnknownField
+            | UnknownParameter
+            | ValidationFailed
+        ):
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_422_type_0 = UnknownExpand.from_dict(data)
+
+                return response_422_type_0
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_422_type_1 = UnknownField.from_dict(data)
+
+                return response_422_type_1
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_422_type_2 = ValidationFailed.from_dict(data)
+
+                return response_422_type_2
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_422_type_3 = InvalidCursor.from_dict(data)
+
+                return response_422_type_3
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_422_type_4 = InvalidLimit.from_dict(data)
+
+                return response_422_type_4
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_422_type_5 = InvalidRange.from_dict(data)
+
+                return response_422_type_5
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_422_type_6 = UnknownEnumValue.from_dict(data)
+
+                return response_422_type_6
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            try:
+                if not isinstance(data, dict):
+                    raise TypeError()
+                response_422_type_7 = TooManyItems.from_dict(data)
+
+                return response_422_type_7
+            except (TypeError, ValueError, AttributeError, KeyError):
+                pass
+            if not isinstance(data, dict):
+                raise TypeError()
+            response_422_type_8 = UnknownParameter.from_dict(data)
+
+            return response_422_type_8
+
+        response_422 = _parse_response_422(response.json())
+
+        return response_422
+
+    if response.status_code == 429:
+        response_429 = QuotaExceeded.from_dict(response.json())
+
+        return response_429
+
+    if response.status_code == 500:
+        response_500 = InternalError.from_dict(response.json())
+
+        return response_500
+
+    if client.raise_on_unexpected_status:
+        raise errors.UnexpectedStatus(response.status_code, response.content)
+    else:
+        return None
+
+
+def _build_response(
+    *, client: AuthenticatedClient | Client, response: httpx.Response
+) -> Response[
+    IncidentPage
+    | InsufficientRights
+    | IpNotAllowed
+    | MissingScope
+    | InternalError
+    | InvalidCursor
+    | InvalidLimit
+    | InvalidRange
+    | TooManyItems
+    | UnknownEnumValue
+    | UnknownExpand
+    | UnknownField
+    | UnknownParameter
+    | ValidationFailed
+    | InvalidToken
+    | MalformedRequest
+    | MethodNotAllowed
+    | PayloadTooLarge
+    | QuotaExceeded
+    | UnsupportedMediaType
+]:
+    return Response(
+        status_code=HTTPStatus(response.status_code),
+        content=response.content,
+        headers=response.headers,
+        parsed=_parse_response(client=client, response=response),
+    )
+
+
+def sync_detailed(
+    *,
+    client: AuthenticatedClient,
+    body: IncidentQueryRequest | Unset = UNSET,
+) -> Response[
+    IncidentPage
+    | InsufficientRights
+    | IpNotAllowed
+    | MissingScope
+    | InternalError
+    | InvalidCursor
+    | InvalidLimit
+    | InvalidRange
+    | TooManyItems
+    | UnknownEnumValue
+    | UnknownExpand
+    | UnknownField
+    | UnknownParameter
+    | ValidationFailed
+    | InvalidToken
+    | MalformedRequest
+    | MethodNotAllowed
+    | PayloadTooLarge
+    | QuotaExceeded
+    | UnsupportedMediaType
+]:
+    """Query the same collection as listIncident, with the parameters in a JSON body.
+
+     Takes exactly the parameters listIncident accepts on the query string, as one JSON object: a list-
+    valued filter as a JSON array, everything else as a string, number or boolean, and null for a
+    parameter you are not sending. An empty object reads the collection unfiltered. The answer is byte-
+    identical to what listIncident returns for the same values, and the caller needs the same scope -
+    this is a read that happens to use POST, so it starts no job, writes nothing and takes no
+    idempotency key. Reach for it when the filter is too long or too awkward for a url - a few hundred
+    ids, free text carrying reserved characters - and stay on listIncident otherwise, since a GET can be
+    cached and a POST cannot. A member this operation does not define is refused, exactly as an unknown
+    query parameter is.
+
+    Args:
+        body (IncidentQueryRequest | Unset): The parameters, as one JSON object. A list-valued
+            filter is a JSON array; everything else is a string, number or boolean. An omitted member
+            and an explicit null both mean the parameter was not sent, and an empty array means it was
+            sent empty - which every list filter refuses, exactly as it refuses an empty value on the
+            query string.
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        Response[IncidentPage | InsufficientRights | IpNotAllowed | MissingScope | InternalError | InvalidCursor | InvalidLimit | InvalidRange | TooManyItems | UnknownEnumValue | UnknownExpand | UnknownField | UnknownParameter | ValidationFailed | InvalidToken | MalformedRequest | MethodNotAllowed | PayloadTooLarge | QuotaExceeded | UnsupportedMediaType]
+    """
+
+    kwargs = _get_kwargs(
+        body=body,
+    )
+
+    response = client.get_httpx_client().request(
+        **kwargs,
+    )
+
+    return _build_response(client=client, response=response)
+
+
+def sync(
+    *,
+    client: AuthenticatedClient,
+    body: IncidentQueryRequest | Unset = UNSET,
+) -> (
+    IncidentPage
+    | InsufficientRights
+    | IpNotAllowed
+    | MissingScope
+    | InternalError
+    | InvalidCursor
+    | InvalidLimit
+    | InvalidRange
+    | TooManyItems
+    | UnknownEnumValue
+    | UnknownExpand
+    | UnknownField
+    | UnknownParameter
+    | ValidationFailed
+    | InvalidToken
+    | MalformedRequest
+    | MethodNotAllowed
+    | PayloadTooLarge
+    | QuotaExceeded
+    | UnsupportedMediaType
+    | None
+):
+    """Query the same collection as listIncident, with the parameters in a JSON body.
+
+     Takes exactly the parameters listIncident accepts on the query string, as one JSON object: a list-
+    valued filter as a JSON array, everything else as a string, number or boolean, and null for a
+    parameter you are not sending. An empty object reads the collection unfiltered. The answer is byte-
+    identical to what listIncident returns for the same values, and the caller needs the same scope -
+    this is a read that happens to use POST, so it starts no job, writes nothing and takes no
+    idempotency key. Reach for it when the filter is too long or too awkward for a url - a few hundred
+    ids, free text carrying reserved characters - and stay on listIncident otherwise, since a GET can be
+    cached and a POST cannot. A member this operation does not define is refused, exactly as an unknown
+    query parameter is.
+
+    Args:
+        body (IncidentQueryRequest | Unset): The parameters, as one JSON object. A list-valued
+            filter is a JSON array; everything else is a string, number or boolean. An omitted member
+            and an explicit null both mean the parameter was not sent, and an empty array means it was
+            sent empty - which every list filter refuses, exactly as it refuses an empty value on the
+            query string.
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        IncidentPage | InsufficientRights | IpNotAllowed | MissingScope | InternalError | InvalidCursor | InvalidLimit | InvalidRange | TooManyItems | UnknownEnumValue | UnknownExpand | UnknownField | UnknownParameter | ValidationFailed | InvalidToken | MalformedRequest | MethodNotAllowed | PayloadTooLarge | QuotaExceeded | UnsupportedMediaType
+    """
+
+    return sync_detailed(
+        client=client,
+        body=body,
+    ).parsed
+
+
+async def asyncio_detailed(
+    *,
+    client: AuthenticatedClient,
+    body: IncidentQueryRequest | Unset = UNSET,
+) -> Response[
+    IncidentPage
+    | InsufficientRights
+    | IpNotAllowed
+    | MissingScope
+    | InternalError
+    | InvalidCursor
+    | InvalidLimit
+    | InvalidRange
+    | TooManyItems
+    | UnknownEnumValue
+    | UnknownExpand
+    | UnknownField
+    | UnknownParameter
+    | ValidationFailed
+    | InvalidToken
+    | MalformedRequest
+    | MethodNotAllowed
+    | PayloadTooLarge
+    | QuotaExceeded
+    | UnsupportedMediaType
+]:
+    """Query the same collection as listIncident, with the parameters in a JSON body.
+
+     Takes exactly the parameters listIncident accepts on the query string, as one JSON object: a list-
+    valued filter as a JSON array, everything else as a string, number or boolean, and null for a
+    parameter you are not sending. An empty object reads the collection unfiltered. The answer is byte-
+    identical to what listIncident returns for the same values, and the caller needs the same scope -
+    this is a read that happens to use POST, so it starts no job, writes nothing and takes no
+    idempotency key. Reach for it when the filter is too long or too awkward for a url - a few hundred
+    ids, free text carrying reserved characters - and stay on listIncident otherwise, since a GET can be
+    cached and a POST cannot. A member this operation does not define is refused, exactly as an unknown
+    query parameter is.
+
+    Args:
+        body (IncidentQueryRequest | Unset): The parameters, as one JSON object. A list-valued
+            filter is a JSON array; everything else is a string, number or boolean. An omitted member
+            and an explicit null both mean the parameter was not sent, and an empty array means it was
+            sent empty - which every list filter refuses, exactly as it refuses an empty value on the
+            query string.
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        Response[IncidentPage | InsufficientRights | IpNotAllowed | MissingScope | InternalError | InvalidCursor | InvalidLimit | InvalidRange | TooManyItems | UnknownEnumValue | UnknownExpand | UnknownField | UnknownParameter | ValidationFailed | InvalidToken | MalformedRequest | MethodNotAllowed | PayloadTooLarge | QuotaExceeded | UnsupportedMediaType]
+    """
+
+    kwargs = _get_kwargs(
+        body=body,
+    )
+
+    response = await client.get_async_httpx_client().request(**kwargs)
+
+    return _build_response(client=client, response=response)
+
+
+async def asyncio(
+    *,
+    client: AuthenticatedClient,
+    body: IncidentQueryRequest | Unset = UNSET,
+) -> (
+    IncidentPage
+    | InsufficientRights
+    | IpNotAllowed
+    | MissingScope
+    | InternalError
+    | InvalidCursor
+    | InvalidLimit
+    | InvalidRange
+    | TooManyItems
+    | UnknownEnumValue
+    | UnknownExpand
+    | UnknownField
+    | UnknownParameter
+    | ValidationFailed
+    | InvalidToken
+    | MalformedRequest
+    | MethodNotAllowed
+    | PayloadTooLarge
+    | QuotaExceeded
+    | UnsupportedMediaType
+    | None
+):
+    """Query the same collection as listIncident, with the parameters in a JSON body.
+
+     Takes exactly the parameters listIncident accepts on the query string, as one JSON object: a list-
+    valued filter as a JSON array, everything else as a string, number or boolean, and null for a
+    parameter you are not sending. An empty object reads the collection unfiltered. The answer is byte-
+    identical to what listIncident returns for the same values, and the caller needs the same scope -
+    this is a read that happens to use POST, so it starts no job, writes nothing and takes no
+    idempotency key. Reach for it when the filter is too long or too awkward for a url - a few hundred
+    ids, free text carrying reserved characters - and stay on listIncident otherwise, since a GET can be
+    cached and a POST cannot. A member this operation does not define is refused, exactly as an unknown
+    query parameter is.
+
+    Args:
+        body (IncidentQueryRequest | Unset): The parameters, as one JSON object. A list-valued
+            filter is a JSON array; everything else is a string, number or boolean. An omitted member
+            and an explicit null both mean the parameter was not sent, and an empty array means it was
+            sent empty - which every list filter refuses, exactly as it refuses an empty value on the
+            query string.
+
+    Raises:
+        errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
+        httpx.TimeoutException: If the request takes longer than Client.timeout.
+
+    Returns:
+        IncidentPage | InsufficientRights | IpNotAllowed | MissingScope | InternalError | InvalidCursor | InvalidLimit | InvalidRange | TooManyItems | UnknownEnumValue | UnknownExpand | UnknownField | UnknownParameter | ValidationFailed | InvalidToken | MalformedRequest | MethodNotAllowed | PayloadTooLarge | QuotaExceeded | UnsupportedMediaType
+    """
+
+    return (
+        await asyncio_detailed(
+            client=client,
+            body=body,
+        )
+    ).parsed

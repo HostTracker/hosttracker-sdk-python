@@ -1,0 +1,88 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hosttracker"
+dynamic = ["version"]
+description = "Official Python SDK for the HostTracker API2 v2 - uptime, blacklist, certificate and risk monitoring."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+authors = [{ name = "HostTracker Ltd", email = "support@host-tracker.com" }]
+keywords = ["hosttracker", "monitoring", "uptime", "api", "sdk", "webhooks"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: System :: Monitoring",
+  "Typing :: Typed",
+]
+dependencies = [
+  # The generated client is httpx + attrs; `Self` comes from typing_extensions so the
+  # generated models stay importable below 3.11's typing.Self.
+  "httpx>=0.23.1,<0.29.0",
+  "attrs>=22.2.0",
+  "typing-extensions>=4.7.0",
+  # Imported directly by the async transport and the async job/check pollers.
+  "anyio>=3.6.2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "pytest-asyncio>=0.23",
+  "respx>=0.21",
+  "ruff>=0.6",
+  # Pinned in scripts/regen.sh too - kept here so `pip install -e .[dev]` can regenerate.
+  "openapi-python-client==0.29.0",
+]
+
+[project.urls]
+Homepage = "https://www.host-tracker.com"
+Documentation = "https://www.host-tracker.com/apidocs/v2"
+Source = "https://github.com/HostTracker/hosttracker-sdk-python"
+Changelog = "https://github.com/HostTracker/hosttracker-sdk-python/blob/main/CHANGELOG.md"
+"OpenAPI document" = "https://github.com/HostTracker/openapi"
+
+[tool.hatch.version]
+path = "hosttracker/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["hosttracker"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "hosttracker",
+  "README.md",
+  "CHANGELOG.md",
+  "LICENSE",
+  "scripts",
+  "tests",
+  "openapi-python-client.yaml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+filterwarnings = ["error::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 120
+# The generated tree is formatted by the generator's own post-hooks (see
+# openapi-python-client.yaml) and must never be hand-edited; only the hand-written layer
+# is linted.
+extend-exclude = ["hosttracker/_generated"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = [
+  "E501",   # line length is handled by the formatter
+  "UP007",  # `X | Y` unions are already used; this fires on runtime-evaluated spots
+]

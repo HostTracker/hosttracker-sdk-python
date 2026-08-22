@@ -1,0 +1,19 @@
+# openapi-python-client configuration - consumed by scripts/regen.sh.
+# Pinned generator version lives in scripts/regen.sh (OPENAPI_PYTHON_CLIENT_VERSION).
+
+# Closed value sets become typing.Literal string aliases rather than enum.Enum subclasses,
+# so requests accept a newly added server-side value without an SDK release.
+literal_enums: true
+
+# Per-attribute docstrings in the generated models (IDE hover help).
+docstrings_on_attributes: true
+
+# Formatting/lint pass over the generated tree (ruff is pinned in scripts/regen.sh).
+# `--isolated` is required: the hooks run INSIDE hosttracker/_generated, and without it ruff
+# would pick up the repo's pyproject.toml - which excludes that tree - and do nothing.
+# `--exit-zero` keeps unfixable style findings in generated code from failing the run.
+post_hooks:
+  # The generator's own templates use typographic dashes in a few docstrings; keep the tree to plain hyphens.
+  - "perl -CSD -pi -e 's/\\x{2014}|\\x{2013}/-/g' $(find . -name '*.py')"
+  - "ruff check . --isolated --line-length 120 --select E,F,I,UP --fix --exit-zero"
+  - "ruff format . --isolated --line-length 120"

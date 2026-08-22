@@ -1,0 +1,97 @@
+name: Release
+
+# Publishes to PyPI when a `v*` tag is pushed (e.g. `v0.1.0`). The tag must match
+# hosttracker/_version.py - the job refuses to publish otherwise.
+#
+# ─── SETUP REQUIRED BEFORE THE FIRST RELEASE ────────────────────────────────────────
+# Preferred, no secret at all: PyPI Trusted Publishing (OIDC).
+#   1. Register the `hosttracker` project on PyPI.
+#   2. PyPI -> project -> Publishing -> add a GitHub publisher:
+#        owner = HostTracker, repository = hosttracker-sdk-python,
+#        workflow = release.yml, environment = pypi
+#   3. Create a GitHub environment named `pypi` (optionally with required reviewers).
+#   The `id-token: write` permission below does the rest.
+#
+# Fallback, if Trusted Publishing is not used: set the repository secret
+#   PYPI_API_TOKEN   - a PyPI API token scoped to the `hosttracker` project
+# and uncomment the `password:` line in the publish step.
+#
+# Until one of those is configured the publish step fails and nothing is uploaded.
+# ────────────────────────────────────────────────────────────────────────────────────
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip build twine
+          pip install -e ".[dev]"
+
+      - name: Tag must match the package version
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          TAG_REF: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, re, pathlib, sys
+          tag = os.environ["TAG_REF"].lstrip("v")
+          text = pathlib.Path("hosttracker/_version.py").read_text()
+          version = re.search(r'__version__\s*=\s*"([^"]+)"', text).group(1)
+          if tag != version:
+              sys.exit(f"tag v{tag} does not match hosttracker/_version.py ({version})")
+          print(f"ok: releasing {version}")
+          PY
+
+      - name: Test
+        run: pytest -q
+
+      - name: Build
+        run: |
+          python -m build
+          python -m twine check dist/*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # PyPI Trusted Publishing (OIDC) - no stored token needed
+      contents: write   # attach the artifacts to the GitHub release
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # with:
+        #   password: ${{ secrets.PYPI_API_TOKEN }}   # only if NOT using Trusted Publishing
+
+      - name: Attach the artifacts to the GitHub release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true

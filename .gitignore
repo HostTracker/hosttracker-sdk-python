@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv
+venv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Local
+.env
+*.local
+.DS_Store
+.idea/
+.vscode/
+
+# hosttracker/_generated/ is deliberately COMMITTED - installing this package must never
+# require the generator. Regenerate it with scripts/regen.sh.

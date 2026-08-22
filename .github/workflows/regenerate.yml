@@ -1,0 +1,73 @@
+name: Regenerate from spec
+
+# Fired by the HostTracker/openapi repository when a new OpenAPI document is published:
+#
+#   curl -X POST https://api.github.com/repos/HostTracker/hosttracker-sdk-python/dispatches \
+#     -H "Authorization: Bearer $PAT" \
+#     -d '{"event_type":"spec-updated"}'
+#
+# The PAT lives in the openapi repo, not here. No registry secret is needed: this workflow
+# only opens a pull request for review.
+on:
+  repository_dispatch:
+    types: [spec-updated]
+  workflow_dispatch:
+    inputs:
+      spec_url:
+        description: Override the spec URL (defaults to the published 3.1 twin)
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Regenerate
+        env:
+          # Read as an environment variable and validated below: a dispatch payload must
+          # never be interpolated straight into a shell line.
+          INPUT_SPEC_URL: ${{ inputs.spec_url }}
+        run: |
+          set -euo pipefail
+          if [ -n "${INPUT_SPEC_URL:-}" ]; then
+            case "$INPUT_SPEC_URL" in
+              https://raw.githubusercontent.com/HostTracker/openapi/*) ;;
+              *) echo "refusing a spec URL outside the openapi repository"; exit 1 ;;
+            esac
+            export HT_SPEC_URL="$INPUT_SPEC_URL"
+          fi
+          bash scripts/regen.sh
+
+      - name: Test the regenerated client
+        run: |
+          .venv/bin/pip install -e ".[dev]"
+          .venv/bin/python -m pytest -q
+
+      - name: Open a pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: spec-update
+          title: "chore: regenerate from the published OpenAPI document"
+          commit-message: "chore: regenerate from the published OpenAPI document"
+          body: |
+            Automated regeneration of `hosttracker/_generated` from the published
+            OpenAPI document.
+
+            Review checklist:
+            - [ ] Diff is additive (new endpoints / members / vocabulary values) - MINOR release
+            - [ ] Any removal or renamed member - the API would have shipped a new version; investigate
+            - [ ] `CHANGELOG.md` updated
+            - [ ] Hand-written layer still covers the behaviour contract (errors, retry,
+                  idempotency, paging, jobs, checks, webhooks)
+          labels: generated
+          delete-branch: true

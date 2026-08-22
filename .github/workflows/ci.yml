@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The generated client uses PEP 604 unions in evaluated positions and
+        # typing_extensions.Self; 3.11 is the floor declared in pyproject.toml.
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint (hand-written layer only)
+        # hosttracker/_generated is excluded in pyproject.toml: it is formatted by the
+        # generator's own post-hooks and must never be hand-edited.
+        run: |
+          ruff check hosttracker tests scripts
+          ruff format --check hosttracker tests
+
+      - name: Unit tests
+        # Fully mocked; the live smoke in tests/test_live_smoke.py skips itself unless
+        # HT_BASE_URL is set, and CI deliberately does not set it.
+        run: pytest -q
+
+      - name: Import cost guard
+        # `import hosttracker` must not pull in the ~1200 generated model modules.
+        run: |
+          python - <<'PY'
+          import sys
+          import hosttracker  # noqa: F401
+          loaded = [m for m in sys.modules if m.startswith("hosttracker._generated.models.")]
+          assert not loaded, f"importing hosttracker eagerly loaded {len(loaded)} model modules"
+          print("ok: import hosttracker stays lazy")
+          PY
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build the distributions
+        run: |
+          python -m pip install --upgrade pip build twine
+          python -m build
+          python -m twine check dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
