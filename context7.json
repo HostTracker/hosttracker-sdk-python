@@ -1,0 +1,20 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "HostTracker SDK for Python",
+  "description": "Official client for the HostTracker API v2: website uptime, blacklist, certificate and risk monitoring, instant checks from locations worldwide, monitors, contacts, webhooks and status pages.",
+  "excludeFolders": [
+    "hosttracker/_generated",
+    "tests",
+    ".venv",
+    "build",
+    "dist"
+  ],
+  "rules": [
+    "The package is hosttracker; install with pip install hosttracker and create a client with HostTracker(token=...).",
+    "Authenticate with an API token minted at https://www.host-tracker.com/integrations/api; tokens carry scopes per family (check, monitor, contact, subs, webhook, statuspage, account).",
+    "Timestamps on the wire are Unix seconds in both directions, never ISO strings.",
+    "List endpoints are cursor-paginated: pass the returned nextCursor back verbatim; never build a cursor.",
+    "Errors are RFC 9457 problem documents; branch on the machine code field, not on the HTTP status alone.",
+    "Bulk operations and report generation are asynchronous: they return a job id to poll."
+  ]
+}
