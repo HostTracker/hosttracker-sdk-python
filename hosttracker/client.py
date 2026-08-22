@@ -298,7 +298,7 @@ class _BaseClient:
 
 
 class HostTracker(_BaseClient):
-    """Synchronous HostTracker API2 v2 client.
+    """Synchronous HostTracker API v2 client.
 
     ::
 

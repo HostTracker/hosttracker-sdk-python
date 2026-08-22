@@ -5,23 +5,44 @@ build-backend = "hatchling.build"
 [project]
 name = "hosttracker"
 dynamic = ["version"]
-description = "Official Python SDK for the HostTracker API2 v2 - uptime, blacklist, certificate and risk monitoring."
+description = "Official Python SDK for the HostTracker API v2 - uptime, SSL and blacklist monitoring, instant checks, alerting, status pages and webhooks."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.11"
 authors = [{ name = "HostTracker Ltd", email = "support@host-tracker.com" }]
-keywords = ["hosttracker", "monitoring", "uptime", "api", "sdk", "webhooks"]
+keywords = [
+  "hosttracker",
+  "host-tracker",
+  "uptime",
+  "uptime-monitoring",
+  "website-monitoring",
+  "monitoring",
+  "status-page",
+  "api-client",
+  "sdk",
+  "rest",
+  "openapi",
+  "webhooks",
+  "ssl-monitoring",
+  "blacklist-monitoring",
+]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
   "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3 :: Only",
+  "Framework :: AsyncIO",
   "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Internet :: WWW/HTTP :: Site Management",
+  "Topic :: Software Development :: Libraries :: Python Modules",
   "Topic :: System :: Monitoring",
+  "Topic :: System :: Networking :: Monitoring",
   "Typing :: Typed",
 ]
 dependencies = [
@@ -47,8 +68,10 @@ dev = [
 [project.urls]
 Homepage = "https://www.host-tracker.com"
 Documentation = "https://www.host-tracker.com/apidocs/v2"
-Source = "https://github.com/HostTracker/hosttracker-sdk-python"
+Repository = "https://github.com/HostTracker/hosttracker-sdk-python"
 Changelog = "https://github.com/HostTracker/hosttracker-sdk-python/blob/main/CHANGELOG.md"
+Issues = "https://github.com/HostTracker/hosttracker-sdk-python/issues"
+"API tokens" = "https://www.host-tracker.com/integrations/api"
 "OpenAPI document" = "https://github.com/HostTracker/openapi"
 
 [tool.hatch.version]

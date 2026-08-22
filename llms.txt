@@ -1,0 +1,99 @@
+# hosttracker - HostTracker Python SDK
+
+> The official Python SDK for the HostTracker API v2 - uptime, blacklist, certificate and risk
+> monitoring, with instant checks, alerting, status pages, reports and webhooks. Sync and async,
+> typed end to end, built on httpx. Generated from the published OpenAPI document, with a small
+> hand-written layer for one error type, a retry policy that knows which 429 is which, automatic
+> idempotency keys, cursor paging, job polling, instant-check polling and webhook signature
+> verification.
+
+```bash
+pip install hosttracker
+```
+
+Python 3.11 or newer.
+
+## Quick start
+
+```python
+import os
+from hosttracker import HostTracker, parse_webhook_event, verify_webhook_signature
+
+ht = HostTracker(token=os.environ["HT_TOKEN"])
+
+# One page, or every page - cursors are handled for you.
+page = ht.monitors.list_monitor(limit=50)
+for monitor in ht.paginate(ht.monitors.list_monitor, state=["down"]):
+    print("DOWN:", monitor.name)
+
+# Create a monitor. body= takes a plain dict or the operation's request model.
+created = ht.monitors.create_monitor(
+    body={"name": "Marketing site", "type": "http", "url": "https://www.example.com",
+          "interval": 5, "locations": {"pools": ["allworld"]}}
+)
+
+# Run an instant check; run_check follows the resultUrl the API returns.
+result = ht.run_check({"url": "https://www.example.com", "type": "http"})
+
+# Verify a webhook on the RAW request bytes, then parse it.
+if not verify_webhook_signature(request.headers, request.body, os.environ["HT_WEBHOOK_SECRET"]):
+    return 400
+event = parse_webhook_event(request.body)
+```
+
+Async is the same options and the same helper names, awaited:
+
+```python
+from hosttracker import AsyncHostTracker
+
+async with AsyncHostTracker(token=os.environ["HT_TOKEN"]) as ht:
+    page = await ht.monitors.list_monitor(limit=10)
+    async for monitor in ht.paginate(ht.monitors.list_monitor):
+        print(monitor.name)
+```
+
+Operations are grouped by the spec's tags and each method is the `operationId` in snake_case:
+`ht.monitors.list_monitor`, `ht.contacts.create_contact`, `ht.status_pages.create_status_page`,
+`ht.jobs.get_job`.
+
+## Documentation
+
+- [README](https://github.com/HostTracker/hosttracker-sdk-python#readme): the full guide, sections below.
+- [Install](https://github.com/HostTracker/hosttracker-sdk-python#install)
+- [Quick start](https://github.com/HostTracker/hosttracker-sdk-python#60-second-quick-start): token, first calls, webhook verification.
+- [Async](https://github.com/HostTracker/hosttracker-sdk-python#async): `AsyncHostTracker`.
+- [Configuration](https://github.com/HostTracker/hosttracker-sdk-python#configuration): token, base_url, timeout, max_retries, idempotency, custom transport.
+- [Calling operations](https://github.com/HostTracker/hosttracker-sdk-python#calling-operations): parameters, `body=`, models.
+- [Error handling](https://github.com/HostTracker/hosttracker-sdk-python#error-handling): one exception type, branch on `code`.
+- [Retries](https://github.com/HostTracker/hosttracker-sdk-python#retries): what is retried and what is never retried.
+- [Idempotency](https://github.com/HostTracker/hosttracker-sdk-python#idempotency): automatic keys, your own key, replay detection.
+- [Paging](https://github.com/HostTracker/hosttracker-sdk-python#paging): `paginate`, body-query twins, `syncCursor`.
+- [Jobs](https://github.com/HostTracker/hosttracker-sdk-python#jobs): waiting on the 202 bulk doors.
+- [Instant checks](https://github.com/HostTracker/hosttracker-sdk-python#instant-checks): `run_check`.
+- [Webhooks](https://github.com/HostTracker/hosttracker-sdk-python#webhooks): verification, rotation, the second signature scheme.
+- [Timestamps](https://github.com/HostTracker/hosttracker-sdk-python#timestamps): Unix seconds, both directions.
+- [Forward compatibility](https://github.com/HostTracker/hosttracker-sdk-python#forward-compatibility): absorbing values added after your install.
+- [Regenerating from the spec](https://github.com/HostTracker/hosttracker-sdk-python#regenerating-from-the-spec)
+- [CHANGELOG](https://github.com/HostTracker/hosttracker-sdk-python/blob/main/CHANGELOG.md)
+
+## The API
+
+- [API reference](https://www.host-tracker.com/apidocs/v2): every operation, by tag.
+- [Guides](https://www.host-tracker.com/apidocs/v2/guide): authentication, paging, jobs, webhooks, errors.
+- [API tokens](https://www.host-tracker.com/integrations/api): mint a token and pick its scopes.
+- [OpenAPI document](https://api2.host-tracker.com/openapi/v2.json): the contract this client is generated from.
+- [openapi repository](https://github.com/HostTracker/openapi): the published document, its twins and the contract facts.
+- [MCP server](https://mcp.host-tracker.com/mcp): streamable-HTTP MCP endpoint for AI agents.
+- [Problem codes](https://api2.host-tracker.com/problems/): `https://api2.host-tracker.com/problems/{code}`.
+
+## Sibling clients
+
+- [hosttracker-sdk-js](https://github.com/HostTracker/hosttracker-sdk-js): `npm install @hosttracker/sdk`.
+- [hosttracker-sdk-go](https://github.com/HostTracker/hosttracker-sdk-go): `go get github.com/HostTracker/hosttracker-sdk-go`.
+- [hosttracker-sdk-dotnet](https://github.com/HostTracker/hosttracker-sdk-dotnet): `dotnet add package HostTracker.Sdk`.
+- [ht-cli](https://github.com/HostTracker/cli): the command-line client.
+- [SDK overview](https://www.host-tracker.com/integrations/sdk): all clients, on the HostTracker site.
+
+## Optional
+
+- [Issues](https://github.com/HostTracker/hosttracker-sdk-python/issues): bugs and questions about this client. MIT licensed.

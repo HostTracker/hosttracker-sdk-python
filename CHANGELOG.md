@@ -46,7 +46,7 @@ only adds endpoints, members or vocabulary values is a MINOR release here.
 
 ## [0.1.0] - unreleased
 
-First release. Generated from the HostTracker API2 v2 OpenAPI document
+First release. Generated from the HostTracker API v2 OpenAPI document
 (145 paths, 182 operations, 508 schemas) with `openapi-python-client` 0.29.0.
 
 ### Added

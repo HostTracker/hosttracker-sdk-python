@@ -1,6 +1,6 @@
 # hosttracker
 
-Official Python SDK for the **HostTracker API2 v2** - uptime, blacklist, certificate and
+Official Python SDK for the **HostTracker API v2** - uptime, blacklist, certificate and
 risk monitoring, with alerting and status pages.
 
 Sync and async, typed end to end, built on [httpx](https://www.python-httpx.org/).

@@ -1,4 +1,4 @@
-"""Opt-in smoke run against a real API2 instance.
+"""Opt-in smoke run against a real API instance.
 
 Skipped unless ``HT_BASE_URL`` is set. Read-only by design - it never creates, edits or
 deletes a monitor, contact or webhook. The one write it makes is ``POST /check``, which

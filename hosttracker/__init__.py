@@ -1,4 +1,4 @@
-"""Official Python SDK for the HostTracker API2 v2.
+"""Official Python SDK for the HostTracker API v2.
 
 ::
 
