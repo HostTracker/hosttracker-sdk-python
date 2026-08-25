@@ -16,7 +16,9 @@ class ContactActivePeriodView:
     """The contact's active-hours window, exactly as it is stored."""
 
     start: str
+    """ When the window opens, as a clock time of day - `"09:00:00"`. """
     end: str
+    """ When the window closes, as a clock time of day - `"18:00:00"`. """
     days: list[str] | Unset = UNSET
     """ The week days the window applies on, as names. """
     timezone: None | str | Unset = UNSET

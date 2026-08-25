@@ -39,8 +39,14 @@ class IcCreateRequest:
     are ORed. An empty clause is refused. Agent-routed types only. """
     pools: list[str] | Unset = UNSET
     """ Which monitoring-location pools to run from. Absent means every location the account may use. """
+    strict_tls: bool | Unset = UNSET
+    """ Validate the TLS handshake strictly. When true an untrusted root, an incomplete chain, a hostname mismatch
+    or a self-signed certificate is recorded on the result's TLS details and fails the handshake - what a
+    certificate checker wants. Default false keeps the relaxed handshake an uptime check wants, where an incomplete
+    chain must not read as down. HTTP checks only. """
     type_: IcCreateRequestType | Unset = UNSET
-    """ Which kind of check to run. Defaults to `http`. """
+    """ Which kind of check to run. Defaults to `http`. `pageSpeed` is accepted as an alias for `waterfall`. The
+    alias is accepted on input only: the check reads back as `waterfall`. """
 
     def to_dict(self) -> dict[str, Any]:
         url = self.url
@@ -72,6 +78,8 @@ class IcCreateRequest:
         if not isinstance(self.pools, Unset):
             pools = self.pools
 
+        strict_tls = self.strict_tls
+
         type_: str | Unset = UNSET
         if not isinstance(self.type_, Unset):
             type_ = self.type_
@@ -93,6 +101,8 @@ class IcCreateRequest:
             field_dict["locations"] = locations
         if pools is not UNSET:
             field_dict["pools"] = pools
+        if strict_tls is not UNSET:
+            field_dict["strictTls"] = strict_tls
         if type_ is not UNSET:
             field_dict["type"] = type_
 
@@ -136,6 +146,8 @@ class IcCreateRequest:
 
         pools = cast(list[str], d.pop("pools", UNSET))
 
+        strict_tls = d.pop("strictTls", UNSET)
+
         _type_ = d.pop("type", UNSET)
         type_: IcCreateRequestType | Unset
         if isinstance(_type_, Unset):
@@ -150,6 +162,7 @@ class IcCreateRequest:
             exclude_locations=exclude_locations,
             locations=locations,
             pools=pools,
+            strict_tls=strict_tls,
             type_=type_,
         )
 

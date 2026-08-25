@@ -113,7 +113,8 @@ class MonitorBulkItem:
     """ Free-form labels. A tag filter matches any of them. """
     type_: MonitorBulkItemType | Unset = UNSET
     """ Which kind of check this is. It fixes which `settings` members are valid and cannot be changed after
-    creation. """
+    creation. `pageSpeed` is accepted as an alias for `waterfall`. The alias is accepted on input only: the monitor
+    reads back as `waterfall`. """
     url: str | Unset = UNSET
     """ The address the check is aimed at. An absolute http(s) url for the types that fetch one
     (`https://example.com/health`); a bare host or IP for the types that do not (`example.com`, `203.0.113.7`);

@@ -1,7 +1,7 @@
 from typing import Literal
 
 ListInstantCheckTypeItem = Literal[
-    "crawl", "dns", "dnsbl", "http", "ping", "port", "rusRegBL", "trace", "waterfall", "webRisk", "whois"
+    "crawl", "dns", "dnsbl", "http", "ping", "port", "trace", "waterfall", "webRisk", "whois"
 ]
 
 LIST_INSTANT_CHECK_TYPE_ITEM_VALUES: set[ListInstantCheckTypeItem] = {
@@ -11,7 +11,6 @@ LIST_INSTANT_CHECK_TYPE_ITEM_VALUES: set[ListInstantCheckTypeItem] = {
     "http",
     "ping",
     "port",
-    "rusRegBL",
     "trace",
     "waterfall",
     "webRisk",

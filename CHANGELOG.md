@@ -8,7 +8,30 @@ The API itself versions separately: v2 is stable, additive changes never bump it
 breaking change would get a new hostname rather than a path prefix. A regeneration that
 only adds endpoints, members or vocabulary values is a MINOR release here.
 
-## [Unreleased]
+## [0.2.0] - 2026-08-25
+
+### Fixed
+
+- The contact read view's `activePeriods[].start`/`end` are published as plain clock-time strings
+  (`"09:00:00"`), matching what the API has always sent. They were wrongly documented as
+  `format: duration` (an ISO 8601 duration), which made the generated model reject every real payload.
+
+### Added
+
+- `strictTls` on the instant-check create request (`POST /check`, http checks only). `true` validates the
+  TLS handshake strictly: an untrusted root, an incomplete chain, a hostname mismatch or a self-signed
+  certificate is recorded on the result's TLS details and fails the handshake, which is what a certificate
+  check wants. Omitted or `false` keeps the relaxed handshake an uptime check wants.
+
+### Removed
+
+- `rusRegBL` is no longer an instant-check type; the API withdrew it from `POST /check` (it stays a monitor
+  type). Regenerated from the published specification, which also documents `pageSpeed` as an input alias
+  for the `waterfall` type on monitors and checks.
+
+## [0.1.0] - 2026-08-22
+
+First release.
 
 ### Changed
 
@@ -44,8 +67,6 @@ only adds endpoints, members or vocabulary values is a MINOR release here.
   foreign origin. A `resultUrl` naming a scheme other than http(s) raises
   `HostTrackerError(code="http_error")` before any request goes out.
 
-## [0.1.0] - unreleased
-
 First release. Generated from the HostTracker API v2 OpenAPI document
 (145 paths, 182 operations, 508 schemas) with `openapi-python-client` 0.29.0.
 
@@ -70,5 +91,5 @@ First release. Generated from the HostTracker API v2 OpenAPI document
 - `to_datetime()` / `from_datetime()` for the Unix-seconds wire format.
 - Inline type hints throughout (`py.typed`).
 
-[Unreleased]: https://github.com/HostTracker/hosttracker-sdk-python/compare/v0.1.0...HEAD
+[0.2.0]: https://github.com/HostTracker/hosttracker-sdk-python/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/HostTracker/hosttracker-sdk-python/releases/tag/v0.1.0

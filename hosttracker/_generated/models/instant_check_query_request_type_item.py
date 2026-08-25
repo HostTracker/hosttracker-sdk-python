@@ -1,7 +1,7 @@
 from typing import Literal
 
 InstantCheckQueryRequestTypeItem = Literal[
-    "crawl", "dns", "dnsbl", "http", "ping", "port", "rusRegBL", "trace", "waterfall", "webRisk", "whois"
+    "crawl", "dns", "dnsbl", "http", "ping", "port", "trace", "waterfall", "webRisk", "whois"
 ]
 
 INSTANT_CHECK_QUERY_REQUEST_TYPE_ITEM_VALUES: set[InstantCheckQueryRequestTypeItem] = {
@@ -11,7 +11,6 @@ INSTANT_CHECK_QUERY_REQUEST_TYPE_ITEM_VALUES: set[InstantCheckQueryRequestTypeIt
     "http",
     "ping",
     "port",
-    "rusRegBL",
     "trace",
     "waterfall",
     "webRisk",

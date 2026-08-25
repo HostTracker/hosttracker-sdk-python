@@ -1,8 +1,6 @@
 from typing import Literal
 
-IcCreateRequestType = Literal[
-    "crawl", "dns", "dnsbl", "http", "ping", "port", "rusRegBL", "trace", "waterfall", "webRisk", "whois"
-]
+IcCreateRequestType = Literal["crawl", "dns", "dnsbl", "http", "ping", "port", "trace", "waterfall", "webRisk", "whois"]
 
 IC_CREATE_REQUEST_TYPE_VALUES: set[IcCreateRequestType] = {
     "crawl",
@@ -11,7 +9,6 @@ IC_CREATE_REQUEST_TYPE_VALUES: set[IcCreateRequestType] = {
     "http",
     "ping",
     "port",
-    "rusRegBL",
     "trace",
     "waterfall",
     "webRisk",

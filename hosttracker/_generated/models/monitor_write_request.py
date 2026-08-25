@@ -44,7 +44,8 @@ class MonitorWriteRequest:
 
     type_: MonitorWriteRequestType
     """ Which kind of check this is. It fixes which `settings` members are valid and cannot be changed after
-    creation. """
+    creation. `pageSpeed` is accepted as an alias for `waterfall`. The alias is accepted on input only: the monitor
+    reads back as `waterfall`. """
     add_tags: list[str] | Unset = UNSET
     """ Tags to ADD to whatever this monitor already carries, leaving its other tags alone. Update only, and never
     together with `tags`, which REPLACES the set instead. On a bulk update every monitor starts from its own tags -
